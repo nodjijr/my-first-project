@@ -1,0 +1,2145 @@
+domain erpx_com_ven
+
+"Serviço de Pedidos do ERPX"
+service pedido {
+    endpoints {
+
+        "Listagem de pedidos"
+        query listPedidos {
+            in {
+                "Id das Empresas"
+                empresas : string?*
+
+                "Id das Filiais"
+                filiais : string?*
+
+                "Números dos pedidos"
+                numeroPedido : integer?*
+
+                "Data emissão inicial "
+                dataEmiIni : date?
+
+                "Data emissão final"
+                dataEmiFim : date?
+
+                "Ids dos clientes"
+                clientes : string?*
+
+                "Ids dos representantes"
+                representantes : string?*
+
+                "Condições de pagamentos"
+                condicoesPagamento : string?*
+
+                "Situação do pedido"
+                sitPed : enumSitPed?*
+
+                "Pedido bloqueado?"
+                pedBlo : boolean?
+                
+                "Usuário de geração"
+                usuGer : string?*
+                
+                "Usuário de alteração"
+                usuAlt : string?*
+
+                "Pagina"
+                page : recPageRequest
+            }
+            out {
+                "Lista pedidos"
+                recE120ped : recE120ped?*
+                "Total"
+                totalElements : integer
+            }
+        }
+
+        "Busca de itens do pedido"
+        query listItemPedido {
+            in {
+
+                "Identificador do pedido"
+                pedidoId : string
+
+                "Sequencia do item"
+                sequencia : integer?
+
+                "Código de produto ou serviço"
+                codigo : string?
+
+                "Descrição do produto ou serviço"
+                descricao : string?
+
+                "Pagina"
+                page : recPageRequest
+            }
+            out {
+
+                "Lista de itens do pedido"
+                itens : recE120ipd?*
+                "Total"
+                totalElements : integer
+            }
+        }
+
+        "Busca de itens do pedido"
+        query listItemPedidoLookup {
+            in {
+
+                "Identificador do pedido"
+                pedidoId : string
+
+                "Sequencia do item"
+                sequencia : integer?
+
+                "Código de produto ou serviço"
+                codigo : string?
+
+                "Descrição do produto ou serviço"
+                descricao : string?
+
+                "Pagina"
+                page : recPageRequest
+            }
+            out {
+
+                "Lista de itens do pedido"
+                itens : recE120ipd?*
+                "Total"
+                totalElements : integer
+            }
+        }
+        
+        "Retorno para edição dos itens do pedido"
+        query getItemPedido {
+        	in {
+        		
+        		"Id dos Itens do Pedido"
+        		e120ipd : string
+        	}
+        	out {
+        		"Itens do pedido"
+        		e120ipd : recE120ipd?
+        	}
+        }
+        
+        "Obter dados gerais do pedido"
+        query getDadosGeraisPedido {
+            in {
+            	"Id do pedido"
+                e120ped : string
+            }
+            out {
+                "Dados gerais do pedido"
+                dadosGerais : recDadosGerais?
+            }
+        }
+        
+        "Action para gravação das informações adicionais "
+        action persistInfoAdic {
+        	in {
+        	"ID inf adicional"
+        	id : string?
+        	
+        	"Número Pedido"
+            e120ped : string
+            
+            "Observação do Pedido"
+            obsPed : string ( 999 )?
+
+            "Endereço de entrega"
+            e001endEnt : string?
+
+            "Endereço de cobrança"
+            e001endCob : string?
+
+            "Condição Pagamento"
+            e028cpg : string?
+
+            "Transportadora"
+            e001pesTra : string?
+
+            "Redespacho"
+            e001pesRed : string?
+
+            "Via de transporte"
+            codVia : enumCodVia?
+
+            "Placa Veículo"
+            plaVei : string ( 10 )?
+
+            "Valor/Percentual/CIF ou FOB do Frete"
+            vlrFre : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Frete CIF ou FOB"
+            cifFob : enumCifFob?
+
+            "Valor/Percentual Seguro"
+            vlrSeg : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Valor/Percentual Embalagens"
+            vlrEmb : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Valor/Percentual Encargos"
+            vlrEnc : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Valor/Percentual Outras Despesas"
+            vlrOut : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Valor Frete Destacado"
+            vlrFrd : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Valor Outras Despesas Destacado"
+            vlrOud : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "Valor desconto do cliente"
+            vlrDad : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            "% Desconto do cliente"
+            perDad : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+
+            "Indicativo se deve manter as parcelas do faturamento"
+            temPar : boolean? default : false
+
+            "Motivo"
+            e021mot : string?
+
+            "Observação Motivo"
+            obsMot : string ( 250 )?
+
+            "Aceita Faturamento Parcial"
+            acePar : boolean? default : false
+
+            "Filial de Faturamento"
+            e070filFat : string?
+
+            "Nº Pedido Cliente"
+            pedCli : string ( 20 )?	
+
+            "Previsão Entrega"
+            datEnt : date?
+			
+			"Indicativo de presença do consumidor"
+            indPre : enumIndPre?  
+            
+            }
+           out {
+           	"Informações adicionais do pedido"
+           	e120inf: e120inf
+           }
+        }
+        
+        "Action para gravação de itens"
+        action persistItens {
+        	in {
+	           
+	           "Id do item"
+	            id : string?
+	
+	            "Número Pedido"
+	            e120ped : string
+	
+	            "Produto"
+	            e075der : string?
+	
+				"Pedido do Cliente"
+	            pedCli : string ( 20 )?
+	
+	            "Sequência Pedido Cliente"
+	            seqPcl : string ( 10 )?
+	
+	            "Complemento"
+	            cplIpd : string( 250 )?
+	
+	            "Reserva Estoque"
+	            resEst : boolean?
+	
+	            "Quantidade Pedida"
+	            qtdPed : double? minValue : 0.00 maxValue : 999999999.99999 //decimal(14, 5)
+	
+	            "Quantidade Cancelada"
+	            qtdCan : double? minValue : 0.00 maxValue : 999999999.99999 default : 0.0 //decimal(14, 5)
+	            
+	            "Quantidade Faturada"
+	            qtdFat : double? minValue : 0.00 maxValue : 999999999.99999 default : 0.0 //decimal(14, 5)
+	
+	            "Tabela de Preço"
+	            e081tab : string?
+	
+	            "Preço Unitário/Fixo"
+	            preUni : double? minValue : 0.00 maxValue : 99999999999.9999999999 //decimal(21, 10)
+	
+	            "% Desconto"
+	            perDsc : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+	
+	            "% Comissão"
+	            perCom : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+	
+	            "Previsão Entrega"
+	            datEnt : date?
+	
+	            "Valor Desconto"
+	            vlrDsc : money? minValue : 0.00 maxValue : 9999999999999.99
+	
+	            "Valor Comissão"
+	            vlrCom : money? minValue : 0.00 maxValue : 9999999999999.99
+	
+	            "Valor Base de Comissão"
+	            vlrBco : money? minValue : 0.00 maxValue : 9999999999999.99            
+	
+	            "Situação"
+	            sitIpd : enumSitPed?
+	
+	            "Motivo"
+	            e021mot : string?
+	
+	            "Observação Motivo"
+	            obsMot : string ( 250 )?
+	
+	            "Unidade Medida Venda"
+	            e015medVen : string?
+	
+	            "Quantidade Unidade Medida Venda"
+	            qtdVen : double? minValue : 0.00 maxValue : 999999999.99999 //decimal(14, 5)
+	
+	            "Preço Unidade Medida Venda"
+	            preVen : double? minValue : 0.00 maxValue : 99999999999.9999999999 //decimal(21, 10)
+	
+	            "Observação do item produto Pedido"
+	            obsIpd : string ( 999 )?
+	
+	            "Representante"
+	            e001pesRep : string?
+	
+	            "Finalidade de Venda"
+	            e067fin : string?
+	
+	            "Brinde Promocional"
+	            indBrd : boolean?
+	
+	            "Produto ou Serviço"
+	            proSer : enumProSer?
+	
+	            "Transação Produto"
+	            e001tnsIte : string?
+	
+	            "Serviço"
+	            e080ser : string?
+	
+	            "Código Tributação p/ DARF"
+	            codTri : string ( 5 )?
+	
+				"Último usuário de alteração do pedido"
+				e120pedUsuAlt : string? 
+				
+	            "Impostos"
+	            e120imi : e120imi?*
+
+        	}
+        	
+        	out {
+        	    "Lista pedidos"
+                recE120ipd : recE120ipd?*
+                
+                "Usuário da última alteração do pedido"
+                e120pedUsuAlt : string?
+                
+                "Total"
+                totalElements : integer
+        	}
+        }
+        
+        "Persistência do Pedido de venda"
+        action persistPedido {
+        	in {
+        		"Id do pedido"
+        		id : string?
+        		
+        		"Empresa"
+        		e070emp : string?
+        		
+        		"Filial"
+        		e070fil : string?
+        		
+				"Data/Hora Emissão + Hora Emissão"
+				dthEmi : dateTime?
+				
+				"Cliente"
+				e001pesCli : string?
+				
+				"Representante/Vendedor"
+				e001pesRep : string?
+				
+				"Transação Produto"
+				e001tnsPro : string?
+				
+				"Transação Serviço"
+				e001tnsSer : string?
+				
+				"Indicativo de presença do consumidor"
+				indPre : enumIndPre?
+        	}
+        	
+        	out {
+				"Dados gerais do pedido"
+                dadosGerais : recDadosGerais?
+        	}
+        }
+
+       "Persistência da parcela do pedido de venda"
+        action persistInstallments {
+        	in {
+        		"Id do pedido"
+        		orderId : string
+        		"Id da parcela"
+        		installmentId : string?
+				"Quantidade de dias da parcela"
+				installmentDays :  integer? minValue : 0 maxValue : 999
+				"Data de vencimento da parcela"
+				installmentDueDate : date?
+				"Percentual da parcela"
+				installmentPercentage :  double? minValue : 0.00 maxValue : 999.99
+				"Valor da parcela"
+				installmentValue : money? minValue : 0.00 maxValue : 9999999999999.99
+				"Id da forma de pagamento"
+				paymentMethodId : string?
+				"Observação da parcela"
+				installmentNote : string(250)?
+        	}
+        	
+        	out {
+	           "Id da parcela"
+	            installmentId : string?
+        	}
+        }
+
+        "Action para persistir as observações"
+        action persistObservacao {
+           in {
+               "id das observações"
+               id : string?
+
+               "Id Pedido"
+               e120ped : string
+
+			   "Seq. Item Produto"
+               e120ipd : string?
+            
+               "Texto de Observação do Pedido"
+               obsPed: string
+               
+               "Tipo da Observação"
+               tipObs: enumTipOpd?
+				
+			   "Motivo"
+               e021mot : string?
+            
+               "Tipo de Informação"
+               tipInf : enumTipLog?
+
+			   "Área da Observação"
+               areObs : enumAreEmp?
+
+		       "Aprovação do Pedido pela Área"
+               aprRpr : enumAprRpr?
+           }
+           out {
+               "Observação"
+               e120obs : e120obs
+           }
+       }
+        
+        "Primitiva para obter informações adicionais"
+        query getInfAdicionais {
+        	in {
+        		"id das informações adicionais"
+        		e120inf: string
+        	}
+        	out {
+        		"Informações adicionais"
+        		e120inf: recE120inf?
+        	}
+        }
+        
+        "Primitiva responsável por listar as observações do pedido"
+        query listObservacoesPedido {
+        	in {
+        		"identificador do pedido"
+        		idPedido : string
+        		
+        		"Pagina"
+                page : recPageRequest
+        	}
+        	
+        	out {
+        		"lista de observações"
+        		e120obs : recE120obs?*
+        		
+        		"Total"
+                totalElements : integer
+        	}
+        }
+        
+        "Primitiva responsável por recuperar as informações de conferência do pedido"
+        query getPedidoConferencia{
+        	in{
+        		"Identificador do pedido"
+        		idPedido : string
+        	}
+        	out{
+        		"Pedido para ser realizada a conferencia"
+        		e120pedConf: recE120pedConf?		
+        		
+        	}
+        }
+        
+        "Action para fechamento do pedido"
+        action updatePedidoFechamento {
+        	in {
+	           "Lista de Ids de pedido"
+	            ids : string*
+        	}
+        	
+        	out {
+        	   "Lista resultado do fechamento dos pedidos"
+                recFechamentoPedido : recFechamentoPedido?*
+        	}
+        }
+        
+        "Action para cancelamento do pedido"
+        action updatePedidoCancelamento {
+        	in {
+           
+	           "Lista de Ids de pedido"
+	            ids : string*
+        	}
+        	
+        	out {
+        	    "Lista resultado do cancelamento dos pedidos"
+                recCancelamentoPedido : recFechamentoPedido?*
+        	}
+        }        
+        
+        "Action para reabilitar do pedido"
+        action updatePedidoReabilitacao {
+        	in {
+           
+	           "Lista de Ids de pedido"
+	            ids : string*
+        	}
+        	
+        	out {
+        	    "Lista pedidos"
+                recReabilitacaoPedido : recReabilitacaoPedido?*
+        	}
+        }
+        
+        "Action para exclusão do pedido"
+        action deletePedido {
+        	in {
+           
+	           "Lista de Ids de pedido"
+	            ids : string*
+        	}
+        	
+        	out {
+        	    "Lista pedidos"
+                recAcoesPedido : recAcoesPedido?*
+        	}
+        }
+        
+        "Action para exclusão do pedido"
+        action deleteItemPedido {
+        	in {
+           	   "Id do pedido"
+           	   idPedido : string
+           	   		
+	           "Lista de Ids de pedido"
+	           ids : string*
+        	}
+        	
+        	out {
+        	    "Lista pedidos"
+                recExclusaoItemPedido : recExclusaoItemPedido?*
+        	}
+        }
+
+<<<<<<< HEAD
+=======
+        "Action para calcular as parcelas com base no valor financeiro"
+        action calculateInstallments {
+        	in {
+	           "Id do pedido de venda"
+	            orderId : string
+	            "Valor financeiro anterior do pedido de venda"
+	            oldFinancialvalue : money? minValue : 0.00 maxValue : 9999999999999.99
+        	}
+        	out {
+	           "Id do pedido de venda"
+	            orderId : string
+        	}
+        }
+        
+        "Ação para gerar as parcelas com base na condição de pagamento"
+        action generateSaleOrderInstallments {
+        	in {
+        		"ID do pedido de venda"
+        		orderId: string
+        		
+        		"ID da condição de pagamento"
+        		paymentTermId: string
+        	}
+        	out {
+        		"Retorno da geração das parcelas com base na condição de pagamento"
+        		orderId: string?
+        	}
+        }
+        
+        
+>>>>>>> develop
+    }
+    types {
+
+    // define records and enumerations here
+        "Record de paginação"
+        record recPageRequest {
+            "Offset da página"
+            offset : integer
+            "Size da página"
+            size : integer
+            "Campos da ordenação dos registros a serem pesquisados"
+            orderyBy : recFieldsOrderBy?*
+        }
+
+        "Define o registro com os dados dos campos à serem ordenados"
+        record recFieldsOrderBy {
+            "Nome do campo a ser ordenado"
+            field : string
+            "Tipo de ordenação do campo (ASC / DESC)"
+            order : enumTypeOrder
+        }
+
+        "Enumeração para o tipo de ordenação"
+        enumeration enumTypeOrder {
+            "Tipo de ordenação - Crescente"
+            Asc
+            "Tipo de ordenação - Decrescente"
+            Desc
+        }
+
+        "Enumeração de Produto Serviço"
+        enumeration enumProSer {
+            "Produto"
+            VP
+            "Serviço"
+            VS
+        }
+
+        "Enumeração do tipo de Integração"
+        enumeration enumTipInt {
+            "TEF"
+            V1
+            "POS"
+            V2
+            "e-Commerce"
+            V3
+        }
+
+        // define records and enumerations here
+        "Record de pedido"
+        record recE120ped {
+
+            "Id do pedido"
+            id : string
+            "Código da Empresa"
+            codEmp : integer
+            "Nome fantasia da empresa"
+            sigEmp : string
+            "Código da filial"
+            codFil : integer
+            "Fantasia"
+            sigFil : string
+            "Número do pedido"
+            numPed : integer
+            "Data e hora da emissão"
+            dthEmi : dateTime
+            "Código do cliente"
+            codCli : integer
+            "Nome fantasia do cliente"
+            apePesCli : string
+            "Código do representante"
+            codRep : integer
+            "Nome fantasia do representante"
+            apePesRep : string
+            "id da condição de pagamento"
+            e028cpg : string?
+            "Código de condição de pagamento"
+            codCpg : string
+            "Descrição de condição de pagamento"
+            desCpg : string
+            "Situação do pedido"
+            sitPed : enumSitPed
+            "Pedido bloqueado"
+            pedBlo : boolean
+            "Valor bruto"
+            vlrBruto : money
+            "Valor do desconto"
+            vlrDesconto : money
+            "Valor liquido"
+            vlrLiq : money
+            "Valor Financeiro"
+            vlrFin : money
+            "Usuário de geração"
+            usuGer : string?
+            "Usuário de alteração"
+            usuAlt : string?
+        }
+
+       "Record de Retorno fechamento do pedido"
+        record recFechamentoPedido {
+            "Id do pedido"
+            id : string
+            "Código da Empresa"
+            codEmp : integer
+            "Nome da filial"
+            nomEmp : string
+            "Código da filial"
+            codFil : integer
+            "Nome da filial"
+            sigFil : string
+            "Número do pedido"
+            numPed : integer
+            "Data e hora da emissão"
+            dthEmi : dateTime
+            "Código do cliente"
+            codCli : integer
+            "Nome do cliente"
+            apePes : string
+            "Situação fechamento"
+            sitPro : boolean
+            "Mensagem"
+            msgDsc : string?
+            "Lista de conferência"
+            sitDsc : string?*
+        }
+        
+         "Record de Retorno fechamento do pedido"
+        record recReabilitacaoPedido {
+            "Id do pedido"
+            id : string
+            "Código da Empresa"
+            codEmp : integer
+            "Nome da filial"
+            nomEmp : string
+            "Código da filial"
+            codFil : integer
+            "Nome da filial"
+            sigFil : string
+            "Número do pedido"
+            numPed : integer
+            "Data e hora da emissão"
+            dthEmi : dateTime
+            "Código do cliente"
+            codCli : integer
+            "Nome do cliente"
+            apePes : string
+            "Situação fechamento"
+            sitPro : boolean
+            "Mensagem"
+            msgDsc : string?
+            "Lista de conferência"
+            sitDsc : string?*
+        }
+
+		"Record de retorno exclusão do item pedido"
+        record recExclusaoItemPedido {
+            "Id do pedido"
+            idPedido : string
+            "Id do item pedido"
+            id : string
+            "Código da Empresa"
+            codEmp : integer
+            "Nome da filial"
+            nomEmp : string
+            "Código da filial"
+            codFil : integer
+            "Nome da filial"
+            sigFil : string
+            "Número do pedido"
+            numPed : integer
+            "Data e hora da emissão"
+            dthEmi : dateTime
+            "Código do cliente"
+            codCli : integer
+            "Nome do cliente"
+            apePes : string
+            "Situação"
+            sitPro : boolean
+            "Mensagem"
+            msgDsc : string?
+            "Lista de conferência"
+            sitDsc : string?*
+        }
+        
+        "Record de retorno sobre as ações do pedido"
+        record recAcoesPedido {
+            "Id do pedido"
+            id : string
+            "Código da Empresa"
+            codEmp : integer
+            "Nome da filial"
+            nomEmp : string
+            "Código da filial"
+            codFil : integer
+            "Nome da filial"
+            sigFil : string
+            "Número do pedido"
+            numPed : integer
+            "Data e hora da emissão"
+            dthEmi : dateTime
+            "Código do cliente"
+            codCli : integer
+            "Nome do cliente"
+            apePes : string
+            "Situação fechamento"
+            sitPro : boolean
+            "Mensagem"
+            msgDsc : string?
+            "Lista de conferência"
+            sitDsc : string?*
+        }
+        
+        "Record de Item do pedido"
+        record recE120ipd {
+            "Identificador do item"
+            idItem : string
+            "Sequência"
+            seqIpd : integer minValue : 0 maxValue : 9999
+            "Produto ou Servico"
+            proSer : enumProSer?
+
+            "Transação do item do pedido"
+            codTnsIte : string?
+            
+            "Id da Transação"
+            e001tnsIte : string
+            
+            "Descrição da transação"
+            desTns : string?
+
+            "Código do produto"
+            codItem : string?
+            
+            "Id de Produto"
+			idProSer : string?
+			
+            "Descrição do produto"
+            desItem: string?
+
+            "Unidade Medida"
+            uniMed : string?
+            
+            "Id de unidade de medida"
+            e015med : string?
+
+            "Descrição da unidade de medida"
+            desMed : string?
+
+            "Unidade de medida de venda"
+            uniVen : string?
+            
+            "Id de unidade de medida"
+            e015medVen : string?
+            
+            "Descrição unidade de medida de venda"
+            desMedVen : string?
+
+            "Quantidade do produto do pedido"
+            qtdPed : double?
+
+            "Quantidade do produto na unidade de medida de venda do item"
+            qtdVen : double?
+
+            "Quantidade do produto na unidade de medida de venda do item"
+            qtdAbe : double?
+
+            "Quantidade do produto na unidade de medida de venda do item"
+            qtdFat : double?
+
+            "Quantidade do produto na unidade de medida de venda do item"
+            qtdCan : double?
+
+            "Quantidade do produto na unidade de medida de venda do item"
+            preVen : double?
+
+            "Indicativo se o estoque do produto do pedido deve ser reservado"
+            resEst : boolean?
+
+            "Código da tabela de preço do produto do pedido"
+            codTpr : string?
+            
+            "Id da Tabela de Preço"
+            e081tab : string?
+            
+            "Descrição"
+            desTpr : string?
+
+            "Preço unitário do produto do pedido"
+            preUni : double?
+
+            "Percentual de desconto para o produto do pedido"
+            perDsc : double?
+
+            "Valor do desconto para o produto do pedido"
+            vlrDsc : money?
+
+            "Percentual de desconto para o produto do pedido"
+            perDad : double?
+
+            "Valor do desconto para o produto do pedido"
+            vlrDad : money?
+            
+            "Valor bruto do produto do pedido"
+            vlrBru : money?
+
+            "Valor líquido do produto do pedido"
+            vlrLiq : money?
+			
+			"Valor líquido de outros"
+			vlrLou : money?
+			
+            "Situação do item do pedido"
+            sitIpd : enumSitPed?
+            
+            "Usuário de alteração"
+            usuAlt : string?
+
+            "Data/hora de alteração"
+            dthAlt : dateTime?
+            
+            "Pedido do Cliente"
+            pedCli : string?
+            
+            "Sequência Pedido Cliente"
+            seqPcl : string?
+            
+             "Complemento"
+            cplIpd : string?
+            
+            "% Comissão"
+            perCom : double?
+            
+            "Previsto Entrega"
+            datEnt : date
+            
+            "Código do Motivo"
+            codMot : string?
+            
+            "Id do Motivo"
+            e021mot : string?
+            
+            "Descrição"
+            desMot : string?
+            
+            "Observação Motivo"
+            obsMot : string?
+            
+            "Observação do item produto Pedido"
+            obsIpd : string?
+            
+            "Código do representante"
+            codRep : string?
+            
+            "Id de Representante"
+            e001pesRep : string?
+            
+            "Nome da pessoa"
+            apePes : string?
+            
+            "Código da finalidade de venda"
+            codFin : string?
+            
+            "Id da Finaldade de venda"
+            e067fin : string?
+            
+            "Descrição"
+            desFin : string?
+            
+            "Brinde Promocional"
+            indBrd : boolean?
+            
+            "Código Tributação p/ DARF"
+            codTri : string?
+            
+            "Lista de impostos"
+            e120imi : recE120imi?*
+            
+            "Quantidade de casas decimais da unidade de estoque"
+            qtdDecEst : integer?
+            
+            "Quantidade de casas decimais da unidade de venda"
+            qtdDecVen : integer?
+        }
+        
+        "Dados gerais dos pedidos"
+		record recE120imi {
+			
+			"Id da entidade de impostos"
+			id : string
+			
+			"Tipo de imposto"
+            tipImp : enumTipImpDoc?
+
+            "Base de c?lculo do imposto"
+            basImp : money?
+
+            "Al?quota do imposto"
+            aliImp : double?
+            
+            "Valor do imposto"
+            vlrImp : money?
+
+            "Percentual de redu??o da base do imposto"
+            perRed : double?
+            
+            "Percentual da margem de valor Adicionado do ICMS ST"
+            perMva : double?
+            
+            "Motivo de desonera??o de ICMS"
+            motDes : enumMotDes?
+            
+            "Id da situação tributária"
+            e027str : string?
+            
+            "C?digo da situa??o tribut?ria de ICMS"
+            codStr : string?
+            
+            "Descrição da situação tributária"
+            desStr : string?
+		}        
+	
+		"Record dos dados gerais do pedido"
+        record recDadosGerais {
+
+            "Id do pedido"
+            id : string
+
+            "Id da empresa"
+            e070emp : string
+
+            "Código da Empresa"
+            codEmp : integer
+
+            "Nome fantasia da empresa"
+            sigEmp : string
+
+            "Id da filial"
+            e070fil : string
+
+            "Código da filial"
+            codFil : integer
+
+            "Nome fantasia da filial"
+            sigFil : string
+
+            "Número do pedido"
+            numPed : integer?
+
+            "Data e hora da emissão"
+            dthEmi : dateTime?
+
+            "Transação Produto"
+            e001tnsPro : string?
+
+            "Código da transação"
+            codTnsPro : string?
+
+            "Descrição da transação"
+            desTnsPro : string?
+
+            "Transação Serviço"
+            e001tnsSer : string?
+
+            "Código da transação"
+            codTnsSer : string?
+
+            "Descrição da transação"
+            desTnsSer : string?
+
+            "Id do cliente"
+            e001pesCli : string?
+
+            "Código cliente"
+            codPesCli : integer?
+
+            "Nome fantasia do cliente"
+            apePesCli : string?
+
+            "Id do Representante"
+            e001pesRep : string?
+
+            "Código representante"
+            codPesRep : integer?
+
+            "Nome do representante"
+            apePesRep : string?
+
+            "Indicativo de presença do consumidor"
+            indPre : enumIndPre?
+
+            "Situação do pedido"
+            sitPed : enumSitPed?
+
+            "Pedido bloqueado"
+            pedBlo : boolean?
+
+            "Quantidade de itens"
+            qtdItens : integer?
+
+            "Valor bruto"
+            vlrTotalBruto : money?
+
+            "Valor liquido"
+            vlrTotalLiq : money?
+
+            "Peso Bruto"
+            pesBru : double?
+
+            "Peso Líquido"
+            pesLiq : double?
+
+            "Usuário de geração"
+            usuGer : string?
+
+            "Data/hora de geração"
+            dthGer : dateTime?
+
+            "Usuário de alteração"
+            usuAlt : string?
+
+            "Data/hora de alteração"
+            dthAlt : dateTime?
+            
+            "Categoria"
+            e064cat : string?
+            
+            "Tipo Pedido"
+            tipPed : enumTipPed?
+            
+            "Procedência"
+            prcPed : enumPrcPed?
+            
+            "Valor/Desconto Produtos"
+            vlrBpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Valor/Desconto Serviços"
+            vlrBse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Desconto Produtos"
+            vlrDpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Desconto Serviços"
+            vlrDse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Valor Líquido Pedido"
+            vlrLiq : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+
+            "Valor Líquido para Financeiro"
+            vlrFin : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+
+            "Base/Valor Comissão"
+            vlrBco : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Valor Comissão"
+            vlrCom : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Valor Líquido Produtos"
+            vlrLpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Valor Líquido Serviços"
+            vlrLse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            "Valor Líquido Outros"
+            vlrLou : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+            
+            "Tem Parcelas Especiais"
+            temPar : boolean? default : false
+			
+            "Marca/Etiqueta vinculada ao pedido"
+            e076mar : string?
+
+            "Usuário Aprovação"
+            usuApr :  string?
+
+            "Data Hora da aprovação do pedido"
+            dthApr : dateTime?
+
+            "Usuário Bloqueio"
+            usuBlo :  string?
+
+            "Data Hora de bloqueio do pedido"
+            dthBlo : dateTime?
+
+            "Usuário Fechamento"
+            usuFec :  string?
+
+            "Data Hora de fechamento do pedido"
+            dthFec : dateTime?
+
+            "Número do documento externo (Integrado)"
+            numInt : string ( 20 )?
+			
+			"Condição de pagamento"
+			e028cpg: string?
+        }
+          
+        "Record com as observações do pedido"  
+        record recE120obs {
+        	
+        	"id das observações"
+        	id: string?
+        	
+        	"Tipo da Observação"
+        	tipObs: string?
+        	
+        	"Tipo da Informação"
+        	tipInf: string?
+        	
+        	"Texto de Observação do Pedido"
+        	obsPed: string?
+        	
+        	"id do item do pedido"
+        	e120ipdId: string?
+        	
+        	"id do motivo de situação específica da observação"
+        	e021mot: string?
+        	
+        	"codigo do motivo de situação específica da observação"
+        	codMot: string?
+        	
+        	"descricao do motivo de situação específica da observação"
+        	desMot: string?
+        	
+        	"usuário de geração"
+        	usuGer: string?
+        	
+        	"data e hora de geração"
+        	dthGer: string?
+        	
+        	"usuário de alteração"
+        	usuAlt: string?
+        	
+        	"data e hora de alteração"
+        	dhtAlt: string?
+        	
+        	"Sequência do item do pedido que gerou a observação"
+        	seqIpd: string?
+        	
+        	"Descrição do item do pedido"
+        	cplIpd: string?
+        	
+        	"Id do serviço"
+        	e080ser: string?
+        	
+        	"Id do produto"
+        	e075der: string?
+        	
+        	"Código do produto quando o item do pedido for um produto"
+        	codPro: string?
+        	
+        	"Código do serviço quando o item do pedido for um serviço"
+        	codSer: string?
+        	
+        }
+        
+        "Record com informações do pedido para conferência"
+        record recE120pedConf{
+        	
+        	// Nome do campo na G5: VlrBpr
+            "Valor/Desconto Produtos"
+            vlrBpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrBse
+            "Valor/Desconto Serviços"
+            vlrBse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrDpr
+            "Desconto Produtos"
+            vlrDpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrDse
+            "Desconto Serviços"
+            vlrDse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrLiq
+            "Valor Líquido Pedido"
+            vlrLiq : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrFin
+            "Valor Líquido para Financeiro"
+            vlrFin : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrBco
+            "Base/Valor Comissão"
+            vlrBco : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrCom
+            "Valor Comissão"
+            vlrCom : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrLpr
+            "Valor Líquido Produtos"
+            vlrLpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Nome do campo na G5: VlrLse
+            "Valor Líquido Serviços"
+            vlrLse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+	
+			// Nome do campo na G5: CifFob
+            "Frete CIF ou FOB"
+            cifFob : enumCifFob
+            
+			// Nome do campo na G5: VlrFre
+            "Valor/Percentual/CIF ou FOB do Frete"
+            vlrFre : money? minValue : 0.00 maxValue : 9999999999999.99
+
+			// Nome do campo na G5: VlrSeg
+            "Valor/Percentual Seguro"
+            vlrSeg : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            // Nome do campo na G5: VlrEmb
+            "Valor/Percentual Embalagens"
+            vlrEmb : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            // Nome do campo na G5: VlrEnc
+            "Valor/Percentual Encargos"
+            vlrEnc : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            // Nome do campo na G5: VlrOut
+            "Valor/Percentual Outras Despesas"
+            vlrOut : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            // Nome do campo na G5: VlrFrd
+            "Valor Frete Destacado"
+            vlrFrd : money? minValue : 0.00 maxValue : 9999999999999.99
+
+            // Nome do campo na G5: VlrOud
+            "Valor Outras Despesas Destacado"
+            vlrOud : money? minValue : 0.00 maxValue : 9999999999999.99
+        	
+        	"Impostos"
+        	e120imd : recE120imd?*
+        	
+        }
+	
+	
+		"Record representando informações da E120IMD"
+		record recE120imd{
+		
+		    // Campos da G5
+            // Nome do campo na G5: VlrBas
+            "Valor Base"
+            basImp : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Campos da G5
+            // Nome do campo na G5: VlrBas
+            "Valor Base"
+            vlrImp : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+
+            // Campos da G5
+            // Nome do campo na G5: TipImp
+            "Tipo de imposto"
+            tipImp : enumTipImpDoc?
+		}
+		
+        "Record de informações adicionais do pedido"
+        record recE120inf {
+        	
+        	"id das infos adicionais"
+        	id: string?
+        	
+        	"Texto de observação"
+        	obsPed: string?
+        	
+        	"Id do motivo"
+        	e021mot: string?
+        	
+        	"Código do motivo de situação específica do pedido"
+        	codMot: string?
+        	
+        	"Descrição do motivo de situação específica do pedido"
+        	desMot: string?
+        	
+        	"Observação do motivo da situação específica do pedido"
+        	obsMot: string?
+        	
+        	"Indicativo se o pedido aceita faturamento parcial"
+        	acePar: boolean?
+        	
+        	"ID da filial de faturamento do pedido"
+        	e070filfat: string?
+        	
+        	"Código da filial de faturamento do pedido"
+        	codFil: string?
+        	
+        	"Nome fantasia da filial de faturamento do pedido"
+        	sigFil: string?
+        	
+        	"Número do pedido do cliente"
+        	pedCli: string?
+        	
+        	"ID do endereço de entrega do cliente"
+        	e001endEnt: string?
+        	
+        	"Número do endereço da entrega"
+            nenEndEnt : string?
+        
+            "Complemento"
+            cplEndEnt : string?
+        
+            "Cep do endereço de entrega"
+            cepEndEnt : integer?
+        	
+        	"Endereço de entrega"
+        	endPesEnt: string?
+        	
+        	"Bairro de entrega"
+        	baiEndEnt: string?
+        	
+        	"Cidade de entrega"
+        	cidEndEnt: string?
+        	
+        	"Sigla da UF de entrega"
+        	sigUfsEnt: string?
+        	
+        	"ID da transportadora para o pedido"
+        	e001pesTra: string?
+        	
+        	"Código da transportadora"
+        	codPesTra: string?
+        	
+        	"Nome fantasia da transportadora"
+        	apePesTra: string?
+			
+			"ID da transportadora de redespacho do pedido"        	
+        	e001pesRed: string?
+        	
+        	"Código da transportadora de redespacho"
+        	codPesRed: string?
+        	
+        	"Nome fantasia da transportadora de redespacho"
+        	apePesRed: string?
+        	
+        	"Código da via de transporte do pedido"
+        	codVia: string?
+        	
+        	"Placa do veículo para o transporte do pedido"
+        	plaVei: string?
+        	
+        	"Valor do frete para o pedido"
+        	vlrFre: money?
+        	
+        	"Indicativo se o frete é CIF ou FOB"
+        	cifFob: string?
+        	
+        	"Valor frete destacado"
+        	vlrFrd: money?
+        	
+        	"Valor do seguro para o pedido"
+        	vlrSeg: money?
+        	
+        	"Valor das embalagens para o pedido"
+        	vlrEmb: money?
+        	
+        	"Valor dos encargos para o pedido"
+        	vlrEnc: money?
+        	
+        	"Valor das outras despesas para o pedido"
+        	vlrOut: money?
+        	
+        	"Valor outras despesas destacado"
+        	vlrOud: money?
+        	
+			"Percentual de desconto do cliente"
+        	perDad: double?
+        	
+        	"Valor do desconto do cliente"
+        	vlrDad: money?
+        	
+			"ID da categoria do cliente"
+			e064cat: string?
+			
+			"Descrição da categoria do cliente"
+			nomCat: string?
+	
+			"Categoria do cliente (prioridade para faturamento)"        	
+        	catCli: string?
+        	
+        	"ID do endereço de cobrança do cliente"
+        	e001endCob: string?
+        	
+        	"Endereço de cobrança"
+        	endPesCob: string?
+        	
+        	"Número do endereço da entrega"
+            nenEndCob : string?
+        
+            "Complemento"
+            cplEndCob : string?
+        
+            "Cep do endereço de entrega"
+            cepEndCob : integer?
+        	
+        	"Bairro de cobrança"
+        	baiEndCob: string?
+        	
+        	"Cidade de cobrança"
+        	cidEndCob: string?
+        	
+        	"Sigla da UF de cobrança"
+        	sigUfsCob: string?
+        	
+        	"ID da condição de pagamento"
+        	e028cpg: string?
+        	
+        	"Código da condição de pagamento"
+        	codCpg: string?
+        	
+        	"Descrição da condição de pagamento"
+        	desCpg: string?
+        	
+        	"Indicativo se deve manter as parcelas no faturamento"
+        	temPar: boolean?
+        	
+            "data de previsão de entrega"
+            datEnt : date?        	
+        	
+        	"Lista com as observações do pedido"
+        	e120obs: recE120obs?*
+        	
+        	"Indicativo de presença do consumidor"
+            indPre : enumIndPre?
+        }	
+        
+        "Sim e Não"
+        enumeration enumSimNao {
+
+            "Sim"
+            VS
+            "Não"
+            VN
+        }
+
+        // Nome da lista na G5: LTipPed
+        "Tipos de pedido"
+        enumeration enumTipPed {
+            "Normal"
+            V1
+            "Automático"
+            V2
+            "Rascunho"
+            V3
+            "Orçamento"
+            V4
+            "Previsão"
+            V5
+            "Pronta Entrega"
+            V6
+            "Aproveitamento Pedido Pronta Entrega"
+            V7
+            "Assistência Técnica"
+            V8
+            "Reposição"
+            V9
+        }
+
+        // Nome da lista na G5: LSitPed
+        "Situação dos pedidos"
+        enumeration enumSitPed {
+            "Fechado - Saldo total para faturar"
+            V1
+            "Fechado - Saldo parcial para faturar"
+            V2
+            "Suspenso"
+            V3
+            "Faturado"
+            V4
+            "Cancelado"
+            V5
+            "NF em composição"
+            V8
+            "Em digitação"
+            V9
+        }
+
+        // Nome da lista na G5: LTipOpd
+        "Tipo Observação"
+        enumeration enumTipOpd {
+            "Manual"
+            VM
+            "Automática"
+            VA
+        }
+
+        // Nome da lista na G5: LAreEmp
+        "Área empresa"
+        enumeration enumAreEmp {
+            "Compras"
+            VCPR
+            "Recursos Humanos"
+            VRH
+            "Diretoria"
+            VDIR
+            "Contabilidade"
+            VCTB
+            "Custos"
+            VCUS
+            "Engenharia de Produto"
+            VENG
+            "Planejamento e Controle da Produção"
+            VPCP
+            "Financeiro"
+            VFIN
+            "Vendas"
+            VVEN
+            "Impostos"
+            VIMP
+        }
+
+        // Nome da lista na G5: LAprRpr
+        "Aprovação Pedido"
+        enumeration enumAprRpr {
+            "Aprovado"
+            VA
+            "Reprovado"
+            VR
+            "Não Analisado"
+            VN
+            "Ignorado"
+            VI
+            "Erro"
+            VE
+            "Contingência"
+            VC
+        }
+
+        "Tipo de informação"
+        enumeration enumTipLog {
+            "Observação"
+            V1
+            "Histórico"
+            V2
+            "Instrução WMS"
+            V3
+        }
+
+        "Indicativo de presença do consumidor"
+        enumeration enumIndPre {
+            "Não se aplica"
+            V0
+            "Operação presencial"
+            V1
+            "Operação não presencial, pela Internet"
+            V2
+            "Operação não presencial, Teleatendimento"
+            V3
+            "NFC-e em operação com entrega em domicílio"
+            V4
+            "Operação presencial, fora do estabelecimento"
+            V5
+            "Operação não presencial, outros"
+            V9
+        }
+
+        "Procedência do Pedido"
+        enumeration enumPrcPed {
+            "Digitado - Normal"
+            V1
+            "Via Internet"
+            V2
+            "Via Importação"
+            V3
+            "Via Automação"
+            V4
+            "Digitado - Distribuição"
+            V5
+            "Via Processos Automáticos - Ordem de Compra"
+            V6
+            "Via Processos Automáticos - Gerais"
+            V7
+            "Via Contrato de Licitação"
+            V8
+            "Via Integração Varejo (Lojas)"
+            V9
+            "Via devolução com quantidade excedente"
+            V10
+        }
+
+        "Vias de Transporte"
+        enumeration enumCodVia {
+            "Rodoviário"
+            V0
+            "Ferroviário"
+            V1
+            "Aquaviário"
+            V2
+            "Dutoviário"
+            V3
+            "Aéreo"
+            V4
+            "Multimodal"
+            V5
+            "Outros"
+            V6
+        }
+
+        "Tipo de frete"
+        enumeration enumCifFob {
+            "Contratação do frete por conta do remetente (CIF)"
+			V0
+			"Contratação do frete por conta do destinatário (FOB)"
+			V1
+			"Contratação do frete por conta de terceiros"
+			V2
+			"Transporte próprio por conta do remetente"
+			V3
+			"Transporte próprio por conta do destinatário"
+			V4
+			"Sem ocorrência de transporte"
+			V9
+        }
+
+        "Mot Des"
+        enumeration enumMotDes {
+            "Nenhum"
+            V0
+            "Táxi"
+            V1
+            "Deficiente físico (Revogada)"
+            V2
+            "Produtor agropecuário"
+            V3
+            "Frotista/Locadora"
+            V4
+            "Diplomático/Consultar"
+            V5
+            "Utilitários e Motocicletas da Amazônia Ocidental e Áreas de Livre Comércio (Resolução 714/88 e 790/94 - CONTRAN e suas alterações)"
+            V6
+            "SUFRAMA"
+            V7
+            "Venda a Órgãos Públicos"
+            V8
+            "Outros"
+            V9
+            "Condutor Deficiente"
+            V10
+            "Deficiente Não Condutor"
+            V11
+            "Órgão de fomento e desenvolvimento agropecuário"
+            V12
+            "Olimpíadas Rio 2016"
+            V16
+            "Solicitado pelo fisco"
+            V90
+        }
+        
+        "Tipo de imposto documento"
+        enumeration enumTipImpDoc {
+           "IPI"
+			IPI
+			"ICMS Normal"
+			ICMS
+			"ICMS Simples Nacional"
+			ICMS_SIMPLES
+			"ICMS Diferido"
+			ICMS_DIFERIDO
+			"ICMS Desonerado"
+			ICMS_DESONERADO
+			"ICMS ST"
+			ICMS_ST
+			"ICMS na UF de destino (DIFAL)"
+			ICMS_UF_DESTINO
+			"Fundo de Combate à Pobreza"
+			FCP
+			"Fundo de Combate à Pobreza retido por Substituição Tributária"
+			FCP_ST
+			"Fundo de Combate à Pobreza na UF de destino (DIFAL)"
+			FCP_UF_DESTINO
+			"ISS"
+			ISS
+			"COFINS Faturamento"
+			COFINS
+			"PIS Faturamento"
+			PIS
+			"COFINS Retido"
+			COFINS_RETIDO
+			"PIS Retido"
+			PIS_RETIDO
+			"CSLL"
+			CSLL
+			"ISS Retido"
+			ISS_RETIDO
+			"IRRF"
+			IRRF
+			"INSS"
+			INSS
+        }
+    }
+    entities {
+        "Vendas - Pedidos - Dados Gerais"
+        entity e120ped {
+            "Id da entidade"
+            id : uuid?
+            "Empresa"
+            e070emp : uuid
+            "Filial"
+            e070fil : uuid
+            "Número Pedido"
+            numPed : integer minValue : 0 maxValue : 99999999
+            "Data/Hora Emissão + Hora Emissão"
+            dthEmi : dateTime
+            "Cliente"
+            e001pesCli : uuid
+            "Categoria"
+            e064cat : uuid?
+            "Tipo Pedido"
+            tipPed : enumTipPed?
+            "Procedência"
+            prcPed : enumPrcPed?
+            "Representante/Vendedor"
+            e001pesRep : uuid
+            "Valor/Desconto Produtos"
+            vlrBpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor/Desconto Serviços"
+            vlrBse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Desconto Produtos"
+            vlrDpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Desconto Serviços"
+            vlrDse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor Líquido Pedido"
+            vlrLiq : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+            "Valor Líquido para Financeiro"
+            vlrFin : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+            "Base/Valor Comissão"
+            vlrBco : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor Comissão"
+            vlrCom : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor Líquido Produtos"
+            vlrLpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor Líquido Serviços"
+            vlrLse : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor Líquido Outros"
+            vlrLou : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0
+            "Tem Parcelas Especiais"
+            temPar : boolean? default : false
+            "Situação"
+            sitPed : enumSitPed?
+            "Transação Produto"
+            e001tnsPro : uuid?
+            "Transação Serviço"
+            e001tnsSer : uuid?
+            "Lista de itens"
+            e120ipd : e120ipd?*
+            "Lista de observações"
+            e120obs : e120obs?*
+            "Pedido bloqueado"
+            pedBlo : boolean? default : false
+            "Marca/Etiqueta vinculada ao pedido"
+            e076mar : uuid?
+            "Usuário Aprovação"
+            usuApr : string?
+            "Data Hora da aprovação do pedido"
+            dthApr : dateTime?
+            "Usuário Bloqueio"
+            usuBlo : string?
+            "Data Hora de bloqueio do pedido"
+            dthBlo : dateTime?
+            "Usuário Fechamento"
+            usuFec : string?
+            "Data Hora de fechamento do pedido"
+            dthFec : dateTime?
+            "Número do documento externo (Integrado)"
+            numInt : string ( 20 )?
+            "Informações adicionais"
+            e120inf : e120inf?
+            "Impostos"
+            e120imd : e120imd?*
+        }
+
+        "Pedidos - Itens do Pedido"
+        entity e120ipd {
+            "Id da entidade"
+            id : uuid?
+            "Número Pedido"
+            e120ped : e120ped?
+            "Sequência"
+            seqIpd : integer? minValue : 0 maxValue : 9999
+            "Produto"
+            e075der : uuid?
+            "Pedido do Cliente"
+            pedCli : string ( 20 )?
+            "Sequência Pedido Cliente"
+            seqPcl : string ( 10 )?
+            "Complemento"
+            cplIpd : string ( 250 )?
+            "Código ICMS Especial"
+            e019tic : uuid?
+            "Código Redução Impostos"
+            e019trd : uuid?
+            "Código ICMS Substituído"
+            e019tstTst : uuid?
+            "Código Substituição PIS"
+            e019tstStp : uuid?
+            "Código Substituição COFINS"
+            e019tstStc : uuid?
+            "Depósito"
+            e205dep : uuid?
+            "Reserva Estoque"
+            resEst : boolean?
+            "Quantidade Pedida"
+            qtdPed : double? minValue : 0.00 maxValue : 999999999.99999 //decimal(14, 5)
+            "Quantidade Faturada"
+            qtdFat : double? minValue : 0.00 maxValue : 999999999.99999 default : 0.0 //decimal(14, 5)
+            "Quantidade Cancelada"
+            qtdCan : double? minValue : 0.00 maxValue : 999999999.99999 default : 0.0//decimal(14, 5)
+            "Quantidade Aberta"
+            qtdAbe : double? minValue : 0.00 maxValue : 999999999.99999 default : 0.0 //decimal(14, 5)
+            "Unidade Medida"
+            e015med : uuid?
+            "Tabela de Preço"
+            e081tab : uuid?
+            "Preço Unitário/Fixo"
+            preUni : double? minValue : 0.00 maxValue : 99999999999.9999999999 //decimal(21, 10)
+            "% Desconto"
+            perDsc : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+            "% Desconto"
+            perDad : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+            "% Comissão"
+            perCom : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+            "Previsão Entrega"
+            datEnt : date?
+            "Centro Custo"
+            e044ccu : uuid?
+            "Valor Frete"
+            vlrFre : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Seguro"
+            vlrSeg : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Embalagem"
+            vlrEmb : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Encargos"
+            vlrEnc : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Outras Despesas"
+            vlrOut : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0 
+            "Valor Frete Destacado"
+            vlrFrd : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Outras Despesas Destacado"
+            vlrOud : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor/Desconto Bruto Produto"
+            vlrBru : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Desconto"
+            vlrDsc : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Desconto"
+            vlrDad : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Base/Valor Comissão"
+            vlrBco : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Comissão"
+            vlrCom : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Valor Outros"
+            vlrLou : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0.0
+            "Valor Líquido Item"
+            vlrLiq : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0.0
+            "Valor para Financeiro"
+            vlrFin : money? minValue : -9999999999999.99 maxValue : 9999999999999.99 default : 0.0
+            "Valor Produto"
+            vlrLpr : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0.0
+            "Situação"
+            sitIpd : enumSitPed
+            "Motivo"
+            e021mot : uuid?
+            "Observação Motivo"
+            obsMot : string ( 250 )?
+            "Unidade Medida Venda"
+            e015medVen : uuid
+            "Quantidade Unidade Medida Venda"
+            qtdVen : double minValue : 0.00 maxValue : 999999999.99999 //decimal(14, 5)
+            "Preço Unidade Medida Venda"
+            preVen : double minValue : 0.00 maxValue : 99999999999.9999999999 //decimal(21, 10)
+            "Observação do item produto Pedido"
+            obsIpd : string ( 999 )?
+            "Representante"
+            e001pesRep : uuid?
+            "Usuário Aprovação"
+            usuApr : string?
+            "Data Aprovação + Hora Aprovação"
+            dthApr : dateTime?
+            "Finalidade de Venda"
+            e067fin : uuid?
+            "Brinde Promocional"
+            indBrd : boolean
+            "Seq. Item N.F. Cobrança"
+            e140ipv : uuid?
+            "Documento Integrado"
+            numInt : string ( 20 )?
+            "Produto ou Serviço"
+            proSer : enumProSer
+            "Transação Produto"
+            e001tnsIte : uuid
+            "Serviço"
+            e080ser : uuid?
+            "Código Tributação p/ DARF"
+            codTri : string ( 5 )?
+            "Valor Produto"
+            vlrIte : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Sequência"
+            e420ipo : uuid?
+            "Impostos"
+            e120imi : e120imi?*
+        }
+
+        "Informações Adicionais"
+        entity e120inf {
+            "Id da entidade"
+            id : uuid?
+            "Número Pedido"
+            e120ped : e120ped?
+            "Observação do Pedido"
+            obsPed : string ( 999 )?
+            "Endereço de entrega"
+            e001endSeqEnt : uuid?
+            "Endereço de cobrança"
+            e001endSeqCob : uuid?
+            "Condição Pagamento"
+            e028cpg : uuid?
+            "Transportadora"
+            e073pesCodtra : uuid?
+            "Redespacho"
+            e073pesCodred : uuid?
+            "Via de transporte"
+            codVia : enumCodVia?
+            "Placa Veículo"
+            plaVei : string ( 10 )?
+            "Valor/Percentual/CIF ou FOB do Frete"
+            vlrFre : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Frete CIF ou FOB"
+            cifFob : enumCifFob?
+            "Valor/Percentual Seguro"
+            vlrSeg : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Valor/Percentual Embalagens"
+            vlrEmb : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Valor/Percentual Encargos"
+            vlrEnc : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Valor/Percentual Outras Despesas"
+            vlrOut : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Valor Frete Destacado"
+            vlrFrd : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Valor Outras Despesas Destacado"
+            vlrOud : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Valor desconto do cliente"
+            vlrDad : money? minValue : 0.00 maxValue : 9999999999999.99
+            "% Desconto do cliente"
+            perDad : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+            "Indicativo se deve manter as parcelas do faturamento"
+            temPar : boolean? default : false
+            "Motivo"
+            e021mot : uuid?
+            "Observação Motivo"
+            obsMot : string ( 250 )?
+            "Aceita Faturamento Parcial"
+            acePar : boolean? default : false
+            "Filial de Faturamento"
+            e070filFat : uuid?
+            "Nº Pedido Cliente"
+            pedCli : string ( 20 )?
+            "data de previsão de entrega"
+            datEnt : date?      
+            "Indicativo de presença do consumidor"
+            indPre : enumIndPre?      
+        }
+
+        "Vendas - Pedidos - Observações"
+        entity e120obs {
+            "Id da entidade"
+            id : uuid?
+            "Número Pedido"
+            e120ped : e120ped?
+            "Seq. Item Produto"
+            e120ipd : e120ipd?
+            "Observação: Tipo"
+            tipObs : enumTipOpd?
+            "Motivo"
+            e021mot : uuid?
+            "Texto"
+            obsPed : string ( 250 )
+            "Área da Observação"
+            areObs : enumAreEmp?
+            "Aprovação do Pedido pela Área"
+            aprRpr : enumAprRpr?
+            "Tipo de Informação"
+            tipInf : enumTipLog?
+        }
+
+        "Pedido - Totalização de impostos"
+        entity e120imd {
+            "Id da entidade"
+            id : uuid?
+            "Número Pedido"
+            e120ped : e120ped?
+            "Valor Base"
+            basImp : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Valor Base"
+            vlrImp : money? minValue : 0.00 maxValue : 9999999999999.99 default : 0
+            "Tipo de imposto"
+            tipImp : enumTipImpDoc?
+        }
+
+        "Pedidos - Itens do Pedido - Impostos"
+        entity e120imi {
+            "Id da entidade"
+            id : uuid?
+            "Item do pedido"
+            e120ipd : e120ipd?
+            "Tipo de imposto"
+            tipImp : enumTipImpDoc?
+            "Base de cálculo do imposto"
+            basImp : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Alíquota do imposto"
+            aliImp : double? minValue : 0.00 maxValue : 99999999999.9999 //decimal(11, 4)
+            "Valor do imposto"
+            vlrImp : money? minValue : 0.00 maxValue : 9999999999999.99
+            "Percentual de redução da base do imposto"
+            perRed : double? minValue : 0.00 maxValue : 999.99999 //decimal(11, 4)
+            "Percentual da margem de valor Adicionado do ICMS ST"
+            perMva : double? minValue : 0.00 maxValue : 999.9999 //decimal(7, 4)
+			"Situação Tributária ICMS"
+			e027str : uuid?
+			"Motivo desoneração ICMS"
+			motDes : enumMotDes?
+        }
+
+        "Pedidos - Parcelamento"
+        entity e120par {
+            "Id da entidade"
+            id : uuid?
+            "Id Pedido"
+            e120ped : e120ped?
+            "Sequência"
+            seqPar : integer? minValue : 0 maxValue : 9999 default : 0
+            "Quantidade de dias para a parcela "
+            diaPar : integer? minValue : 0 maxValue : 9999 default : 0
+            "Data de vencimento da parcela"
+            vctPar : date?
+            "Percentual do valor da parcela"
+            perPar : double? minValue : 0.0000 maxValue: 999.9999 default : 0.0
+            "Valor da parcela"
+            vlrPar : money? minValue: 0.00 maxValue: 9999999999999.99 default : 0.0
+            "Forma de pagamento da parcela"
+            e066fpg : uuid?
+            "Observação da parcela"
+            obsPar : string(250)?
+            "Tipo de integração da parcela"
+            tipInt : enumTipInt?
+        }
+
+    }
+}  
+   

@@ -1,0 +1,29 @@
+   
+    private List<BigDecimal> calculaParcelas(BigDecimal valor, Long vezes, EnumTipPar tipo, BigDecimal valorAcrescimo, boolean addPrimeira) {
+    	List<BigDecimal> lista = new ArrayList<>();
+    	BigDecimal valorParcelaDivide = valor.divide(BigDecimal.valueOf(vezes), 2, BigDecimal.ROUND_HALF_UP);
+    	BigDecimal valorParcelaMultiply = valorParcelaDivide.multiply(BigDecimal.valueOf(vezes));
+    	BigDecimal valorAux = BigDecimal.valueOf(0);
+
+    	for (int i = 0; i < vezes; i++) {
+    		valorAux = valorParcelaDivide;
+        	if (i==0 && EnumTipPar.V1.equals(tipo)) {
+        		valorAux = valorParcelaDivide.add(valor.subtract(valorParcelaMultiply));
+        	} 
+    		if (i==0 && addPrimeira) {
+        		valorAux = valorAux.add(valorAcrescimo);
+    		}
+        	if (i==vezes-1 && !EnumTipPar.V1.equals(tipo)) {
+        		valorAux = valorParcelaDivide.add(valor.subtract(valorParcelaMultiply));
+        	}
+        	System.out.println(valorAux);
+    		lista.add(valorAux);
+		}
+    	System.out.println(valor + " - " + valorParcelaMultiply + " = " + valor.subtract(valorParcelaMultiply) + " + " + valorAcrescimo);
+    	for (int i = 0; i < vezes; i++) {
+        	System.out.println(Double.valueOf(lista.get(i).toString()));
+		}
+        
+    
+    	return lista;
+    }

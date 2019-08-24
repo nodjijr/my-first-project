@@ -1,0 +1,3 @@
+	private List<E120parEntity> convertToE120par(E120pedEntity e120pedEntity, List<Installment> generateInstallments) {
+        return generateInstallments.stream().filter(installment -> installment.getInstallmentValue().compareTo(BigDecimal.ZERO)>0).map(installment -> convertToEntity(e120pedEntity,installment)).collect(Collectors.toList());
+    }

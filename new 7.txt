@@ -1,0 +1,309 @@
+        "Tabelas - Estados"
+        entity e007ufs {
+            "Id da entidade"
+            id : uuid?
+            "Sigla"
+            sigUfs : string ( 2 )
+            "Nome"
+            nomUfs : string ( 20 )
+            "Abreviatura"
+            abrUfs : string ( 5 )?
+            "País"
+            e006pai : e006pai
+            "Indica se o registro foi excluído"
+            excluido : boolean
+        }
+
+        "Tabelas - Países"
+        entity e006pai {
+            "Id da entidade"
+            id : uuid?
+            "Código"
+            codPai : string ( 4 )
+            "Nome"
+            nomPai : string ( 150 )
+            "Código Moeda"
+            e031moe : e031moe?
+            "Indica se o registro foi excluído"
+            excluido : boolean
+        }
+
+        "Tabelas - Moedas"
+        entity e031moe {
+            "Id da entidade"
+            id : uuid?
+            "Código Moeda"
+            codMoe : string ( 3 )
+            "Descrição"
+            desMoe : string ( 30 )
+            "Sigla"
+            sigMoe : string ( 5 )
+            "Indica se o registro foi excluído"
+            excluido : boolean? default : false
+        }
+
+        "Cadastro geral pessoa "
+        entity e001pes {
+            "Id da entidade"
+            id : uuid?
+            "Nome"
+            nomPes : string ( 100 )
+            "Código Pessoa"
+            codPes : integer minValue : 0 maxValue : 999999999
+            "Fantasia"
+            apePes : string ( 50 )
+            "Tipo Representante"
+            tipPes : enumJurFis
+            "CNPJ/CPF"
+            cnpCpf : string ( 14 )?
+            "Fornecedor"
+            e095pes : e095pes?
+            "Indica se o registro foi excluído"
+            excluido : boolean
+            "Situação pessoa"
+            sitpes : enumSitReg?
+        }        
+    
+        "Tabelas - Fornecedores"
+        entity e095pes {
+            "Id da entidade"
+            id : uuid?
+            "Código Pessoa"
+            e001pes : e001pes?
+            "Situação"
+            sitFor : enumSitReg
+            "Indica se o registro foi excluído"
+            excluido : boolean
+        }
+ 
+        "Cadastros - Produtos - Derivações"
+        entity e075der {
+            "Id da entidade"
+            id : uuid?
+            "Empresa"
+            e070emp : e070emp?
+            "Família"
+            e012fam : e012fam?
+            "Código do produto"
+            codPro : string
+            "Descrição do produto"
+            desDer : string
+            "Descrição Complementar"
+            desCpl : string ( 90 )?
+            "Tipo Produto"
+            tipPro : enumTipPro
+            "Situação"
+            sitPro : enumSitReg
+            "Peso Bruto"
+            pesBru : double? minValue : 0.00 maxValue : 999999.99999 //decimal(11, 5)
+            "Peso Líquido"
+            pesLiq : double? minValue : 0.00 maxValue : 999999.99999 //decimal(11, 5)
+            "Indica se o registro foi excluído"
+            excluido : boolean? default : false
+        }
+
+        "Cadastros - Famílias"
+        entity e012fam {
+            "Id da entidade"
+            id : uuid?
+            "Empresa"
+            e070emp : e070emp
+            "Origem Produto"
+            e083ori : e083ori
+            "Família"
+            codFam : string ( 6 )
+            "Descrição"
+            desFam : string ( 50 )
+            "Indica se o registro foi excluído"
+            excluido : boolean? default : false
+        }
+
+        "Cadastros - Origens de Produto"
+        entity e083ori {
+            "Id da entidade"
+            id : uuid?
+            "Empresa"
+            e070emp : e070emp
+            "Código Origem"
+            codOri : string ( 3 )
+            "Descrição"
+            desOri : string ( 40 )
+            "Indica se o registro foi excluído"
+            excluido : boolean
+        }
+
+        "Cadastros - Serviços"
+        entity e080ser {
+            "Id da entidade"
+            id : uuid?
+            "Família"
+            e012fam : e012fam
+            "Situação"
+            sitSer : enumSitReg
+            "Complemento"
+            cplSer : string ( 250 )?
+            "Empresa"
+            e070emp : e070emp?
+            "Serviço"
+            codSer : string ( 14 )
+            "Descrição"
+            desSer : string ( 70 )
+            "Indica se o registro foi excluído"
+            excluido : boolean
+        }
+
+        "Condição de pagamento - Foundation"
+        entity e028cpg {
+            "Id da entidade"
+            id : uuid?
+            "Empresa"
+            e070emp : e070emp
+            "Código da condição de pagamento"
+            codCpg : string ( 6 )
+            "Descrição da condição de pagamento"
+            desCpg : string ( 50 )
+            "Abreviatura"
+            abrCpg : string ( 10 )
+            "Aplicação"
+            aplCpg : enumAplCpg
+            "Situação"
+            sitCpg : enumSitReg
+            "Prazo Médio"
+            przMed : integer? minValue : 0 maxValue : 999
+            "Quantidade Parcelas"
+            qtdPar : integer minValue : 0 maxValue : 999
+            "Pagamento Antecipado"
+            pgtAnt : boolean? default : false
+            "Dia Vencimento Semana"
+            diaEsp : enumDiaEsp
+            "Tipo Parcela"
+            tipPar : enumTipPar
+            "Indica se o registro foi excluído"
+            excluido : boolean
+        }
+
+
+
+        "Cadastros - Unidades de Medida"
+        entity e015med {
+            "Id da entidade"
+            id : uuid?
+            "Unidade Medida"
+            uniMed : string ( 3 )
+            "Unidade Medida Fiscal"
+            uniFis : string ( 6 )?
+            "Descrição"
+            desMed : string ( 10 )
+            "Quantidade Decimais"
+            qtdDec : integer? minValue : 0 maxValue : 9
+            "Indica se o registro foi excluído"
+            excluido : boolean? default : false
+        }
+
+        "Tabelas - Tabelas de Preços de Fornecedores - Dados Gerais "
+        entity e082tab {
+            "Id da entidade"
+            id : uuid?
+            "Empresa"
+            e070emp : e070emp
+            "Moeda"
+            e031moe : e031moe
+            "Fornecedor"
+            e095pes : e095pes?
+            "Estado"
+            e007ufs : e007ufs?
+            "Tabela"
+            codTpr : string ( 4 )
+            "Descrição"
+            desTpr : string ( 250 )
+            "Abreviação"
+            abrTpr : string ( 10 )
+            "Situação"
+            sitReg : enumSitReg
+            "Validades"
+            e082tpr : e082tpr?*
+        }
+
+        "Tabelas - Tabelas de Preços de Venda - Validades"
+        entity e082tpr {
+            "Id da entidade"
+            id : uuid?
+            "Tabela Preço"
+            e082tab : e082tab?
+            "Tabela Preço"
+            desVal : string ( 250 )
+            "Validade Inicial"
+            datIni : date
+            "Validade Final"
+            datFim : date
+            "Usa Preço por Quantidade"
+            usaQtd : boolean?
+            "% Desconto"
+            perDsc : double? minValue : 0.00 maxValue : 999.99 //decimal(5, 2)
+            "Situação"
+            sitReg : enumSitReg
+            "Itens"
+            e082itp : e082itp?*
+        }
+
+        "Tabelas - Cadastro de produto na tabela de preço para compras"
+        entity e082itp {
+            "Id da entidade"
+            id : uuid?
+            "Tabela de preços"
+            e082tpr : e082tpr?
+            "Unidade Medida"
+            e015med : e015med?
+            "Condição de pagamento"
+            e028cpg : e028cpg?
+            "Produto"
+            e075der : e075der?
+            "Serviço"
+            e080ser : e080ser?
+            "Produto ou Serviço"
+            proSer : enumProSer
+            "Produto/Serviço no fornecedor"
+            iteFor : string ( 30 )?
+            "Até Quantidade"
+            qtdMax : integer minValue : 0 maxValue : 999999999
+            "Preço Base"
+            preBas : money minValue : 0.00 maxValue : 9999999999999.99
+            "% Desconto"
+            perDsc : double? minValue : 0.00 maxValue : 999.99
+            "Situação"
+            sitReg : enumSitReg
+            "Observação"
+            obsItp : string ( 250 )?
+        }
+
+        "Status de importação da tabela de preço"
+        entity e082imp{
+        	"Id da entidade"
+            id : uuid?
+        	"Vigência correspondente a importação da tabela de preço"
+        	e082tpr: e082tpr?
+        	"Data e hora da última importação"
+        	datImp: dateTime
+        	"Situação da última importação"
+        	sitImp: enumIndImp
+        	"URL do arquivo da tabela de preço para download"
+        	urlArq: string?
+        	"Logs de execução da importação"
+  			e082lim:e082lim?*       	
+        }
+
+        "Logs de importação"
+        entity e082lim{
+        	"Id da entidade"
+            id : uuid?
+        	"Execução de importação"
+        	e082imp: e082imp?
+        	"Descrição do erro de execução da importação"
+        	desErr: string?
+        	"Descrição curta do erro" 
+        	nomErr: string?
+        	"Data e hora do erro"
+        	datErr: dateTime 
+        }
+
+  
